@@ -1,26 +1,25 @@
 'use strict';
 
 app.factory('Task', function(FURL, $firebase, Auth) {
-
 	var ref = new Firebase(FURL);
 	var tasks = $firebase(ref.child('tasks')).$asArray();
 	var user = Auth.user;
 
 	var Task = {
-		all : tasks,
+		all:tasks,
 
 		getTask: function(taskId) {
 			return $firebase(ref.child('tasks').child(taskId));
 		},
 
 		createTask: function(task) {
-			task.datetime = firebase.Server.TIMESTAMP;
+			task.datetime = Firebase.ServerValue.TIMESTAMP;
 			return tasks.$add(task);
 		},
 
 		editTask: function(task) {
 			var t = this.getTask(task.$id);
-			returnt.$update({title: task.title, description: task.description, total: task.total});
+			return t.$update({title: task.title, description: task.description, total: task.total});
 		},
 
 		cancelTask: function(taskId) {
