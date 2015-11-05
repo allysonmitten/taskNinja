@@ -61,6 +61,7 @@ app.factory('Auth', function(FURL, $firebaseAuth, $firebase) {
 	    	}
 	    });
 
+
 	    function get_gravatar(email, size) {
 
 	    	email = email.toLowerCase();
