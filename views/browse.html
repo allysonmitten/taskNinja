@@ -5,7 +5,7 @@
  	  		<div class="list-group">
 				<!--inserting a search bar-->
  	 			 <div class="form-group">
- 	   				 <div class = "input=group">
+ 	   				 <div class = "input-group">
  	     				 <div class="input-group-addon">
  	        				<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
  	      				</div>
@@ -14,13 +14,13 @@
  	 			</div>
 
  	   			<!--Task List-->
- 	   			<a ng-repeat="task in tasks | filter: {title: searchTask, status" '!cancelled'} | orderBy: 'datetime':true" ng-href="#/browse/{{task.$id}}">
+ 	   			<a ng-repeat="task in tasks | filter: searchTask | orderBy: 'datetime':true" ng-href="'#/browse/{{task.$id}}">
  	      		<div class="list-group-item">
  	      			<div class="row-picture">
  	      				<img class="circle" ng-src="{{task.gravatar}}">
  	      			</div>
  	           		<div class="row-content">
- 	               		<h4 class="list-group-item-heading">{{task.title}} | limitTo:25}}{{ task.title.length > 25? "..." : ""}}</h4>
+ 	               		<h4 class="list-group-item-heading">({task.title}} | limitTo:25}}{{ task.title.length > 25? "..." : ""})</h4>
  	                 	<span class="list-group-item-text">
  	                 		<span am-time-ago="task.datetime"></span>
  	                 	</span>
@@ -66,7 +66,7 @@
  	 								<ul class="dropdown-menu">
  	 									<li><a href="" data-toggle="modal" data-target="#ediModal">EDIT TASK</a></li>
  	 									<li class="divider"></li>
- 	 									<li><a href="" ng-click="cancelTask(selectedTask.$id">CANCEL TASK</a></li>
+ 	 									<li><a href="" ng-click="cancelTask(selectedTask.$id)">CANCEL TASK</a></li>
  	 								</ul>
  	 							</div>
  	 						</div>
