@@ -2,8 +2,8 @@
 
 var app = angular
   .module('TaskNinjaApp', [
-    'ngAnimate',
-    'ngResource',    
+    'ngAnimate',    
+    'ngResource',
     'ngRoute',    
     'firebase',
     'toaster',
@@ -12,8 +12,7 @@ var app = angular
   .constant('FURL', 'https://taskninjaallyson.firebaseio.com/')
   .run(function($rootScope, $location) {
     $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
-      //We can catch the error when $requireAuth is rejected
-      // and redirect the user back to the login page
+
       if (error === "AUTH_REQUIRED") {
         $location.path("/login");
       }
@@ -22,27 +21,27 @@ var app = angular
   .config(function ($routeProvider) {
     $routeProvider      
       .when('/', {
-        templateUrl: 'views/browse.html', 
-        controller: 'BrowseController'       
-      })
-      .when('/login', {
-        templateUrl: 'views/login.html',
-        controller: 'AuthController'
-      })
-      .when('/register', {
-        templateUrl: 'views/register.html',
-        controller: 'AuthController'
+        templateUrl: 'views/browse.html',
+        controller: 'BrowseController'     
       })
       .when('/browse/:taskId', {
         templateUrl: 'views/browse.html',
         controller: 'BrowseController'
       })
+      .when('/register', {
+        templateUrl: 'views/register.html',
+        controller: 'AuthController'
+      })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'AuthController'
+      })
       .when('/dashboard', {
-        templateUrl: 'views/dashboard.html'
+        templateUrl: 'views/dashboard.html',
         controller: 'DashboardController',
-        resolve:{
+        resolve: {
           currentAuth: function(Auth) {
-            return Auth.requiredAuth();
+            return Auth.requireAuth();
           }
         }
       })
@@ -50,4 +49,3 @@ var app = angular
         redirectTo: '/'
       });
   });
-

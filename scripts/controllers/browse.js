@@ -2,49 +2,50 @@
 
 app.controller('BrowseController', function($scope, $routeParams, toaster, Task, Auth, Comment, Offer) {
 
-	$scope.searchTask = '';
+	$scope.searchTask = '';		
 	$scope.tasks = Task.all;
-	$scope.signedIn = Auth.signedIn;
-	$scope.listMode = true;
 
 	$scope.user = Auth.user;
+	$scope.signedIn = Auth.signedIn;
 
+	$scope.listMode = true;
+	
 	if($routeParams.taskId) {
 		var task = Task.getTask($routeParams.taskId).$asObject();
 		$scope.listMode = false;
-		setSelectedTask(task);
-	}
-
+		setSelectedTask(task);	
+	}	
+		
 	function setSelectedTask(task) {
 		$scope.selectedTask = task;
-
+		
 		if($scope.signedIn()) {
-
-			//check if the current login user has already made an offer for selected task
-			Offer.isOffered(task.$id).then(function(data) {
+			
+			Offer.isOfferred(task.$id).then(function(data) {
 				$scope.alreadyOffered = data;
 			});
 
 			$scope.isTaskCreator = Task.isCreator;
 			$scope.isOpen = Task.isOpen;
-
+			$scope.block = false;
+			$scope.isOfferMaker = Offer.isMaker;
 			$scope.isAssignee = Task.isAssignee;
-
 			$scope.isCompleted = Task.isCompleted;
 		}
-
+		
 		$scope.comments = Comment.comments(task.$id);
-
-		$scope.offers = Offer.offers(task.$id);
-
-		$scope.block = false;
-
-		$scope.ifOfferMaker = Offer.isMaker;
+		$scope.offers = Offer.offers(task.$id);		
 	};
 
 	$scope.cancelTask = function(taskId) {
 		Task.cancelTask(taskId).then(function() {
-			toaster.pop('success', 'This task is cancelled successfully.');
+			toaster.pop('success', "This task is cancelled successfully.");
+		});
+	};
+
+	$scope.completeTask = function(taskId) {
+		Task.completeTask(taskId).then(function() {
+			toaster.pop('success', "Congratulation! You have completed this task.");
 		});
 	};
 
@@ -55,46 +56,46 @@ app.controller('BrowseController', function($scope, $routeParams, toaster, Task,
 			gravatar: $scope.user.profile.gravatar
 		};
 
-		Comment.addComment($scope.selectedTask.$id, comment).then(function() {
-			$scope.content = '';
-		});
+		Comment.addComment($scope.selectedTask.$id, comment).then(function() {				
+			$scope.content = '';		
+		});		
 	};
+
+	//Offer
 
 	$scope.makeOffer = function() {
 		var offer = {
 			total: $scope.total,
-			uid: $scope.user.uid,
-			name: $scope.user.profile.gravatar
+			uid: $scope.user.uid,			
+			name: $scope.user.profile.name,
+			gravatar: $scope.user.profile.gravatar 
 		};
 
 		Offer.makeOffer($scope.selectedTask.$id, offer).then(function() {
-			toaster.pop('success', 'Your offer has been placed');
-			$scope.total = '';
-			$scope.block = true;
+			toaster.pop('success', "Your offer has been placed.");
+			
+			
 			$scope.alreadyOffered = true;
-		});
-
+			$scope.total = '';
+			$scope.block = true;			
+		});		
 	};
 
 	$scope.cancelOffer = function(offerId) {
 		Offer.cancelOffer($scope.selectedTask.$id, offerId).then(function() {
-			toaster.pop('success', "Your offer has been cancelled.");
+			toaster.pop('success', "Offer Cancelled.");
 
 			$scope.alreadyOffered = false;
-			$scope.block = false;
+			$scope.block = false;			
 		});
 	};
 
 	$scope.acceptOffer = function(offerId, runnerId) {
 		Offer.acceptOffer($scope.selectedTask.$id, offerId, runnerId).then(function() {
-			toaster.pop('success', 'Offer is accepted.');
+			toaster.pop('success', "Offer is accepted successfully!");
+
+			Offer.notifyRunner($scope.selectedTask.$id, runnerId);
 		});
 	};
-
-	$scope.completeTask = function(taskId){
-		Task.completeTask(taskId).then(function() {
-			toaster.pop('success', 'Congratulations! You have completed this task.');
-		});
-	}
-
+	
 });
