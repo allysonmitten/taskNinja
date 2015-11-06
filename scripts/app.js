@@ -39,7 +39,7 @@ var app = angular
       })
       .when('/dashboard', {
         templateUrl: 'views/dashboard.html'
-        controller: 'DashboardController'
+        controller: 'DashboardController',
         resolve:{
           currentAuth: function(Auth) {
             return Auth.requiredAuth();
